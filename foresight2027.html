@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORESIGHT KOREA 2027 - 연사 및 세션 섭외 현황 대시보드</title>
+  <!-- Google Fonts & Pretendard CDN -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* CSS Reset & Variables */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      --primary-color: #0f172a; /* Slate 900 */
+      --primary-light: #1e293b; /* Slate 800 */
+      --secondary-color: #475569; /* Slate 600 */
+      --accent-color: #0284c7; /* Sky 700 */
+      --accent-light: #e0f2fe; /* Sky 100 */
+      --bg-color: #f8fafc; /* Slate 50 */
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0; /* Slate 200 */
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      
+      --status-confirm-bg: #dcfce7;
+      --status-confirm-text: #15803d;
+      --status-pending-bg: #fef9c3;
+      --status-pending-text: #a16207;
+      --status-need-bg: #fee2e2;
+      --status-need-text: #b91c1c;
+      
+      --font-family: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Header Section */
+    header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 15px;
+    }
+
+    .header-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-meta-item strong {
+      color: white;
+    }
+
+    /* Dashboard Summary Cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 30px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* 71% Progress circular / gauge visual */
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .progress-circle {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent-color) 81%, #f1f5f9 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-circle::before {
+      content: '';
+      position: absolute;
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background-color: var(--card-bg);
+    }
+
+    .progress-text {
+      position: absolute;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .progress-details p {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .progress-details span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Stats bar chart */
+    .stats-bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .stats-bar-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stats-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .stats-bar-bg {
+      height: 8px;
+      background-color: #f1f5f9;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .stats-bar-fill {
+      height: 100%;
+      background-color: var(--accent-color);
+      border-radius: 9999px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Milestone list */
+    .milestone-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .milestone-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.875rem;
+    }
+
+    .milestone-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #cbd5e1;
+    }
+
+    .milestone-item.active .milestone-dot {
+      background-color: var(--accent-color);
+      box-shadow: 0 0 0 4px var(--accent-light);
+    }
+
+    .milestone-item.active {
+      font-weight: 600;
+    }
+
+    /* Search & Filter Controls */
+    .control-panel {
+      background-color: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      padding: 8px 16px 7px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--secondary-color);
+      transition: all 0.2s ease;
+    }
+
+    .track-progress {
+      display: block;
+      margin-top: 3px;
+      font-size: 0.68rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .tab-btn.active .track-progress {
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .tab-btn:hover {
+      background-color: #f1f5f9;
+      color: var(--primary-color);
+    }
+
+    .tab-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 280px;
+      margin-left: auto;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 16px 10px 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      outline: none;
+      font-family: var(--font-family);
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Sessions Table */
+    .table-container {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f8fafc;
+      padding: 16px 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--secondary-color);
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.95rem;
+    }
+
+    tr.session-row {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    tr.session-row:hover {
+      background-color: #f8fafc;
+    }
+
+    tr.session-row.active {
+      background-color: #f0f7ff;
+    }
+
+    .time-col {
+      width: 140px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      color: var(--secondary-color);
+    }
+
+    .id-badge {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      background-color: #f1f5f9;
+      color: #475569;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-right: 8px;
+    }
+
+    .title-col {
+      font-weight: 600;
+    }
+
+    .speaker-col {
+      font-weight: 500;
+    }
+
+    .speaker-affil {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-confirm {
+      background-color: var(--status-confirm-bg);
+      color: var(--status-confirm-text);
+    }
+
+    .badge-pending {
+      background-color: var(--status-pending-bg);
+      color: var(--status-pending-text);
+    }
+
+    .badge-need {
+      background-color: var(--status-need-bg);
+      color: var(--status-need-text);
+    }
+
+    .badge-reserve {
+      background-color: #f1f5f9;
+      color: #64748b;
+    }
+
+    /* Accordion Detail Row */
+    .detail-row {
+      display: none;
+      background-color: #fafbfd;
+    }
+
+    .detail-row.active {
+      display: table-row;
+    }
+
+    .detail-content {
+      padding: 24px 30px;
+      border-bottom: 1px solid var(--border-color);
+      animation: slideDown 0.25s ease-out forwards;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .detail-section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--secondary-color);
+      margin-bottom: 12px;
+      border-left: 3px solid var(--accent-color);
+      padding-left: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .detail-box {
+      background-color: white;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 0.9rem;
+      height: 100%;
+    }
+
+    .candidate-card {
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    .candidate-card:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .candidate-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .candidate-rank {
+      font-weight: 600;
+      color: var(--accent-color);
+      font-size: 0.8rem;
+    }
+
+    .candidate-name {
+      font-weight: 600;
+    }
+
+    .candidate-reason {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .candidate-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .candidate-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 9px;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      background: #fff;
+      color: var(--accent-color);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .candidate-link:hover {
+      background: #eff6ff;
+      border-color: var(--accent-color);
+    }
+
+    .declined-item {
+      font-size: 0.85rem;
+      color: #991b1b;
+      margin-bottom: 6px;
+    }
+
+    .no-data {
+      color: var(--text-muted);
+      font-style: italic;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- Header -->
+  <header>
+    <div class="header-badge">FORESIGHT KOREA 2027</div>
+    <h1>연사 및 세션 섭외 종합 기획안</h1>
+    <p style="color: #cbd5e1; font-weight: 400; margin-top: 4px;">메인 테마: AX: Transforming into an AI-Native Company</p>
+    
+    <div class="header-meta">
+      <div class="header-meta-item">
+        <strong>일시:</strong> <span>2026년 10월 1일 (목)</span>
+      </div>
+      <div class="header-meta-item">
+        <strong>장소:</strong> <span>그랜드 인터컨티넨탈 서울 파르나스 (5층 전관 + 2층 국화룸)</span>
+      </div>
+      <div class="header-meta-item">
+        <strong>대상:</strong> <span>국내 기업 CEO, C-Level 경영진, 핵심 부문장 (약 500명)</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Summary Dashboard Grid -->
+  <div class="summary-grid">
+    <!-- Progress Gauge -->
+    <div class="card">
+      <div class="card-title">전체 섭외 진척도</div>
+      <div class="progress-container">
+        <div class="progress-circle" style="background: conic-gradient(var(--accent-color) 84%, #f1f5f9 0);">
+          <div class="progress-text">84%</div>
+        </div>
+        <div class="progress-details">
+          <p>26 / 31명 확정</p>
+          <span>목표: 기조 1명 + 세션 30명</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demographics Bar chart -->
+    <div class="card">
+      <div class="card-title">연사 인적 구성 분석</div>
+      <div class="stats-bar-group">
+        <div class="stats-bar-item">
+          <div class="stats-bar-label">
+            <span>현직자 (실장, 대표, 소장 등)</span>
+            <strong>12명 (46.2%)</strong>
+          </div>
+          <div class="stats-bar-bg">
+            <div class="stats-bar-fill" style="width: 46.2%; background-color: #0284c7;"></div>
+          </div>
+        </div>
+        <div class="stats-bar-item">
+          <div class="stats-bar-label">
+            <span>교수 및 연구인력</span>
+            <strong>10명 (38.5%)</strong>
+          </div>
+          <div class="stats-bar-bg">
+            <div class="stats-bar-fill" style="width: 38.5%; background-color: #10b981;"></div>
+          </div>
+        </div>
+        <div class="stats-bar-item">
+          <div class="stats-bar-label">
+            <span>컨설턴트 (파트너, 수석 등)</span>
+            <strong>4명 (15.4%)</strong>
+          </div>
+          <div class="stats-bar-bg">
+            <div class="stats-bar-fill" style="width: 15.4%; background-color: #f59e0b;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Milestone Steps -->
+    <div class="card">
+      <div class="card-title">연사 관리 마일스톤</div>
+      <div class="milestone-list">
+        <div class="milestone-item"><div class="milestone-dot"></div><span>6월: 기조연설자 및 연사 50% 확정 (완료)</span></div>
+        <div class="milestone-item active"><div class="milestone-dot"></div><span>7월: 연사 섭외 마감 및 주제 아티클 수집</span></div>
+        <div class="milestone-item"><div class="milestone-dot"></div><span>8월: 강연용 PPT 1차 장표 작성 및 피드백</span></div>
+        <div class="milestone-item"><div class="milestone-dot"></div><span>9월: PPT 장표 최종 다듬기 및 디자인 발주</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Tab Panel -->
+  <div class="control-panel">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="filterTrack('all')">전체 세션</button>
+      <button class="tab-btn" onclick="filterTrack('keynote')">기조연설</button>
+      <button class="tab-btn" onclick="filterTrack('A')">Track A (거시환경)<span class="track-progress" id="progress-A"></span></button>
+      <button class="tab-btn" onclick="filterTrack('B')">Track B (경영전략)<span class="track-progress" id="progress-B"></span></button>
+      <button class="tab-btn" onclick="filterTrack('C')">Track C (AX·Tech)<span class="track-progress" id="progress-C"></span></button>
+      <button class="tab-btn" onclick="filterTrack('D')">Track D (마케팅)<span class="track-progress" id="progress-D"></span></button>
+      <button class="tab-btn" onclick="filterTrack('E')">Track E (조직인사)<span class="track-progress" id="progress-E"></span></button>
+    </div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="세션 주제 또는 연사명 검색..." onkeyup="searchSessions()">
+    </div>
+  </div>
+
+  <!-- Sessions List Table -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 100px;">구분</th>
+          <th class="time-col">시간</th>
+          <th>세션 주제</th>
+          <th style="width: 220px;">연사</th>
+          <th style="width: 140px;">섭외상태</th>
+        </tr>
+      </thead>
+      <tbody id="sessionTableBody">
+        <!-- JS로 동적 렌더링 -->
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  // Raw Data Definitions
+  const sessions = [
+    {
+      id: "Keynote",
+      track: "keynote",
+      trackName: "기조연설",
+      time: "09:00 - 09:50",
+      title: "AX 시대의 개념설계: 모방의 한계를 넘는 '최초의 질문'",
+      speaker: "이정동 교수",
+      affiliation: "서울대학교",
+      email: "leejd@snu.ac.kr",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "기조연설 확정 완료. AX 시대 리더가 던져야 할 개념설계 프레임워크 제시.",
+      candidates: [],
+      declined: []
+    },
+    // Track A
+    {
+      id: "A-1",
+      track: "A",
+      trackName: "TRACK A — 거시환경",
+      time: "10:10 - 11:00",
+      title: "2027 사업계획의 첫 번째 전제: 성장·물가·교역의 새 질서",
+      speaker: "윤상하 실장",
+      affiliation: "대외경제정책연구원",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "거시경제 분석 전문가. (FK26 출연 이력)",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "A-2",
+      track: "A",
+      trackName: "TRACK A — 거시환경",
+      time: "11:20 - 12:10",
+      title: "K자로 갈리는 한국 경제, 2027년 전망과 위기 극복 전략",
+      speaker: "조영무 소장",
+      affiliation: "NH금융연구소",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "섭외완료. K자 양극화와 2027 한국 경제 위기 극복 대응 전략 제시.",
+      candidates: [
+        { rank: "1순위", name: "조영무 소장", affiliation: "NH금융연구소", reason: "거시경제 및 금융 리스크 정밀 분석 강점", profileUrl: "https://www.google.com/search?q=%EC%A1%B0%EC%98%81%EB%AC%B4+NH%EA%B8%88%EC%9C%B5%EC%97%B0%EA%B5%AC%EC%86%8C+%ED%94%84%EB%A1%9C%ED%95%84", videoUrl: "https://www.youtube.com/results?search_query=%EC%A1%B0%EC%98%81%EB%AC%B4+NH%EA%B8%88%EC%9C%B5%EC%97%B0%EA%B5%AC%EC%86%8C+%EA%B0%95%EC%97%B0" },
+        { rank: "2순위", name: "김민식 부장", affiliation: "한국은행 거시전망부", reason: "정부 및 공공 정책 중심의 거시전망 분석 특화" },
+        { rank: "3순위", name: "신관호 교수", affiliation: "고려대 경제학과", reason: "경제학 학술적 깊이 및 거시경제 거장" },
+        { rank: "일반", name: "하준경 교수", affiliation: "한양대 경제학부", reason: "경제 전문가로서의 거시 전망 제시 역량 보유" }
+      ],
+      declined: [
+        { name: "정규철 실장", affiliation: "KDI 경제전망실" },
+        { name: "주원 실장", affiliation: "현대경제연구원" },
+        { name: "이부형 이사대우", affiliation: "현대경제연구원" }
+      ]
+    },
+    {
+      id: "A-3",
+      track: "A",
+      trackName: "TRACK A — 거시환경",
+      time: "13:30 - 14:20",
+      title: "격변의 국제정세와 쪼개지는 질서: 2027 지정학 리스크를 마주한 기업",
+      speaker: "이승주 교수",
+      affiliation: "중앙대학교",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "오후 세션(세션3) 선호 의견 반영하여 타임테이블 변경 완료.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "A-4",
+      track: "A",
+      trackName: "TRACK A — 거시환경",
+      time: "14:40 - 15:30",
+      title: "2027년 자본시장 전망: AI 버블인가 새 사이클인가",
+      speaker: "홍춘욱 대표",
+      affiliation: "프리즘투자자문",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "자본시장 리스크 분석가. 늦은 오후 시간대를 피해 세션4로 배치 완료.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "A-5",
+      track: "A",
+      trackName: "TRACK A — 거시환경",
+      time: "15:50 - 16:40",
+      title: "AI·반도체 인프라 투자 슈퍼사이클과 전력·에너지 병목",
+      speaker: "권석준 교수",
+      affiliation: "성균관대 화학공학부",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "반도체 및 물리 인프라 전문가로서 최신 에너지 병목 리스크 분석 예정.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "A-6",
+      track: "A",
+      trackName: "TRACK A — 거시환경",
+      time: "17:00 - 17:50",
+      title: "2027 정부정책·예산 방향과 기업의 기회",
+      speaker: "장우현 소장",
+      affiliation: "한국조세재정연구원",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "섭외완료. 2027 정부정책·예산 방향과 기업의 기회 강연 확정 (가제 수락).",
+      candidates: [
+        { rank: "1순위", name: "장우현 소장", affiliation: "한국조세재정연구원", reason: "재정성과평가 및 국가중장기 경쟁정책 전문가", profileUrl: "https://www.kipf.re.kr/nolayout/About/Staff/profile/view.do?memId=%24c3c5lM3WILpQ%2FUV7Qg0S9g%3D%3D", videoUrl: "https://www.youtube.com/results?search_query=%EC%9E%A5%EC%9A%B0%ED%98%84+%ED%95%9C%EA%B5%AD%EC%A1%B0%EC%84%B8%EC%9E%AC%EC%A0%95%EC%97%B0%EA%B5%AC%EC%9B%90+%EA%B0%95%EC%97%B0" },
+        { rank: "2순위", name: "박정수 부총장", affiliation: "이화여대", reason: "재정 및 정부예산 분야의 국가 권위자" },
+        { rank: "일반", name: "황선주 연구위원", affiliation: "KDI", reason: "거시 및 금융 정책 분석 특화" },
+        { rank: "일반", name: "이은영 상무", affiliation: "삼일PwC", reason: "회계/세무 관점의 기업 기회 발굴 적임자 (FK25 이력)" },
+        { rank: "일반", name: "유병서 실장", affiliation: "기획재정부 예산실", reason: "실제 정부 예산 수립 실무 총괄 경력자" }
+      ],
+      declined: [
+        { name: "김경호 실장", affiliation: "국회 예산정책처" },
+        { name: "지동하 처장", affiliation: "국회 예산정책처" }
+      ]
+    },
+    // Track B
+    {
+      id: "B-1",
+      track: "B",
+      trackName: "TRACK B — 경영전략·혁신",
+      time: "10:10 - 11:00",
+      title: "AI가 바꾸는 미래 기업: AI 네이티브 컴퍼니",
+      speaker: "김상균 교수",
+      affiliation: "경희대",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "디지털 트랜스포메이션 및 메타버스/AI 융합 미래 전망 전문가.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "B-2",
+      track: "B",
+      trackName: "TRACK B — 경영전략·혁신",
+      time: "11:20 - 12:10",
+      title: "AX 마스터플랜: AI 네이티브 회사로 다시 태어나기",
+      speaker: "정찬욱 파트너",
+      affiliation: "딜로이트",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "기존 트랙C에서 트랙B로 이동 확정. 계약서 재체결 진행 예정.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "B-3",
+      track: "B",
+      trackName: "TRACK B — 경영전략·혁신",
+      time: "13:30 - 14:20",
+      title: "AX 시대의 포트폴리오 리밸런싱",
+      speaker: "원정준 부대표",
+      affiliation: "삼정KPMG",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "M&A 및 사업 리밸런싱 전문가. (FK26 출연 이력)",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "B-4",
+      track: "B",
+      trackName: "TRACK B — 경영전략·혁신",
+      time: "14:40 - 15:30",
+      title: "AX 가치실현 사례: PoC를 ROI로 바꾸는 실행 조건",
+      speaker: "이승환 파트너",
+      affiliation: "삼일PwC",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "섭외완료. PoC를 ROI로 바꾸는 AX 가치실현 실행 조건 제시.",
+      candidates: [
+        { rank: "1순위", name: "이승환 파트너", affiliation: "삼일PwC", reason: "삼일PwC AX 노드 리더 및 기업 재무·회계 AI 트랜스포메이션 전문가", profileUrl: "https://www.pwc.com/kr/ko/services/ax-node.html", videoUrl: "https://www.youtube.com/results?search_query=%EC%9D%B4%EC%8A%B9%ED%99%98+PwC+%EA%B0%95%EC%97%B0" },
+        { rank: "2순위", name: "신민섭 이사", affiliation: "PwC", reason: "AI 성숙도 진단 프레임워크인 'ARIX' 분석 및 구축 전문가", profileUrl: "https://www.pwc.com/kr/ko/services/ax-node.html", videoUrl: "https://www.youtube.com/results?search_query=%EC%8B%A0%EB%AF%BC%EC%84%AD+PwC+ARIX+%EA%B0%95%EC%97%B0" },
+        { rank: "후보", name: "박종민 상무", affiliation: "HDC랩스", reason: "서비스 및 공간 관리의 AI 상용화 및 ROI 실현 실무 전문가" },
+        { rank: "후보", name: "백용욱 부교수", affiliation: "KAIST 경영공학부", reason: "학술 및 실무 기반의 AI ROI 계량 분석 연구자" }
+      ],
+      declined: [
+        { name: "김성훈 대표", affiliation: "업스테이지" }
+      ]
+    },
+    {
+      id: "B-5",
+      track: "B",
+      trackName: "TRACK B — 경영전략·혁신",
+      time: "15:50 - 16:40",
+      title: "AX 시대의 혁신 전략",
+      speaker: "변형균 대표",
+      affiliation: "퓨처웨이브",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "스타트업 및 기업 신사업 혁신 전략 섭외 확정.",
+      candidates: [],
+      declined: [
+        { name: "황재선 부사장", affiliation: "SK디스커버리" },
+        { name: "유영진 교수", affiliation: "런던정경대" }
+      ]
+    },
+    {
+      id: "B-6",
+      track: "B",
+      trackName: "TRACK B — 경영전략·혁신",
+      time: "17:00 - 17:50",
+      title: "실리콘밸리 트렌드 및 기업 경영의 미래",
+      speaker: "손재권 대표",
+      affiliation: "더밀크",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "실리콘밸리 글로벌 트렌드 전문가. 카톡 최종 컨펌(7/1) 후 자료 발송완료.",
+      candidates: [],
+      declined: []
+    },
+    // Track C
+    {
+      id: "C-1",
+      track: "C",
+      trackName: "TRACK C — AX · Tech",
+      time: "10:10 - 11:00",
+      title: "AI 파운데이션 모델 경쟁 이후의 인프라 판도",
+      speaker: "정창모 수석",
+      affiliation: "딜로이트",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "AI 테크 및 클라우드 인프라 아키텍처 수석 컨설턴트.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "C-2",
+      track: "C",
+      trackName: "TRACK C — AX · Tech",
+      time: "11:20 - 12:10",
+      title: "테크 트렌드 2027: 바이오에서 지능형 초연결망까지",
+      speaker: "정지훈 CVO",
+      affiliation: "모두의연구소",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "미래 학자 및 테크 에반젤리스트.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "C-3",
+      track: "C",
+      trackName: "TRACK C — AX · Tech",
+      time: "13:30 - 14:20",
+      title: "자율형 AI 에이전트 — 코파일럿에서 오토파일럿으로",
+      speaker: "김동환 대표",
+      affiliation: "포티투마루",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "국내 대표 NLP 및 에이전트 인공지능 솔루션 최고경영자.",
+      candidates: [],
+      declined: [
+        { name: "이경일 대표", affiliation: "솔트룩스" }
+      ]
+    },
+    {
+      id: "C-4",
+      track: "C",
+      trackName: "TRACK C — AX · Tech",
+      time: "14:40 - 15:30",
+      title: "스틸칼라의 시대: 휴머노이드와 로봇",
+      speaker: "최홍섭 공동대표",
+      affiliation: "마음AI",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "피지컬 AI 및 인간형 로봇 산업 도입 전략 제시.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "C-5",
+      track: "C",
+      trackName: "TRACK C — AX · Tech",
+      time: "15:50 - 16:40",
+      title: "다크팩토리와 피지컬 AI 트렌드, 제조 현장을 바꾸는 산업 AX",
+      speaker: "고태봉 전무",
+      affiliation: "iM증권",
+      status: "need",
+      statusKo: "연락필요",
+      memo: "iM증권 고태봉 전무 섭외 추진 결정. 1순위 초청을 위한 연락처 확보 완료.",
+      candidates: [
+        { rank: "1순위", name: "고태봉 전무", affiliation: "iM증권 리서치본부", reason: "제조업 트렌드 및 지능형 모빌리티/공장 분석 전문가", profileUrl: "https://www.google.com/search?q=%EA%B3%A0%ED%83%9C%EB%B4%89+iM%EC%A6%9D%EA%B6%8C+%ED%94%84%EB%A1%9C%ED%95%84", videoUrl: "https://www.youtube.com/results?search_query=%EA%B3%A0%ED%83%9C%EB%B4%89+%ED%94%BC%EC%A7%80%EC%BB%AC+AI+%EA%B0%95%EC%97%B0" },
+        { rank: "2순위", name: "윤일용 소장", affiliation: "포스코 AI로봇융합연구소", reason: "철강 및 대규모 제조 현장 AI 적용 실무 탑티어" },
+        { rank: "3순위", name: "주시현 상무", affiliation: "현대자동차", reason: "스마트 팩토리 및 모빌리티 인공지능 혁신 담당자" },
+        { rank: "일반", name: "윤성호 대표", affiliation: "마키나락스", reason: "산업용 AI 솔루션 전문 스타트업 대표" }
+      ],
+      declined: [
+        { name: "장영재 교수", affiliation: "KAIST" }
+      ]
+    },
+    {
+      id: "C-6",
+      track: "C",
+      trackName: "TRACK C — AX · Tech",
+      time: "17:00 - 17:50",
+      title: "테크 드래곤의 비상: 중국 AI·로봇 굴기가 한국에 던지는 화두",
+      speaker: "백서인 조교수",
+      affiliation: "한양대학교",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "중국 IT 시장 및 아시아 국가 테크 패권 연구 권위자.",
+      candidates: [],
+      declined: []
+    },
+    // Track D
+    {
+      id: "D-1",
+      track: "D",
+      trackName: "TRACK D — 마케팅",
+      time: "10:10 - 11:00",
+      title: "대한민국 소비 키워드 2027",
+      speaker: "김용섭 소장",
+      affiliation: "날카로운상상력연구소",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "트렌드 스페셜리스트. (FK25, FK26 참여 및 기고 이력 보유)",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "D-2",
+      track: "D",
+      trackName: "TRACK D — 마케팅",
+      time: "11:20 - 12:10",
+      title: "AX시대의 소비자 경험",
+      speaker: "송수진 교수",
+      affiliation: "고려대",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "고객 경험(CX)과 브랜드 리스크 매핑 분야 거장.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "D-3",
+      track: "D",
+      trackName: "TRACK D — 마케팅",
+      time: "13:30 - 14:20",
+      title: "AI 네이티브 기업의 마케팅 넥스트: GEO에서 AI 에이전트 커머스까지",
+      speaker: "박세용 대표",
+      affiliation: "어센트AI",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "검색 마케팅 및 GEO(생성형 AI 최적화) 분야 대표 개척자.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "D-4",
+      track: "D",
+      trackName: "TRACK D — 마케팅",
+      time: "14:40 - 15:30",
+      title: "[AX사례] 퍼포먼스 마케팅의 재설계: AI 측정·최적화와 인간의 판단",
+      speaker: "몰로코",
+      affiliation: "공식 법인 추천 대기",
+      status: "pending",
+      statusKo: "연사검토중",
+      memo: "안재균 한국지사장 고사 후 몰로코 공식 채널을 통해 본사 실무 적임자 추천 요청 진행 중.",
+      candidates: [
+        { rank: "1순위", name: "김민영 CMO", affiliation: "솔루엠 (전 W컨셉 CMO)", reason: "커머스 및 B2B 퍼포먼스 브랜딩 실질 성과 도출인력", profileUrl: "https://www.google.com/search?q=%EA%B9%80%EB%AF%BC%EC%98%81+CMO+%EC%86%94%EB%A3%A8%EC%97%A0+W%EC%BB%A8%EC%85%89", videoUrl: "https://www.youtube.com/results?search_query=%EA%B9%80%EB%AF%BC%EC%98%81+CMO+%EC%BB%A4%EB%A8%B8%EC%8A%A4+%EB%B8%8C%EB%9E%9C%EB%94%A9" }
+      ],
+      declined: [
+        { name: "안재균 지사장", affiliation: "몰로코 한국지사" }
+      ]
+    },
+    {
+      id: "D-5",
+      track: "D",
+      trackName: "TRACK D — 마케팅",
+      time: "15:50 - 16:40",
+      title: "[AX 사례] AX가 이끄는 상품기획 혁신",
+      speaker: "이향은 상무",
+      affiliation: "LG전자 HS사업본부",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "LG전자 고객 경험 연구 전문가. 섭외 확정 완료.",
+      candidates: [],
+      declined: [
+        { name: "윤성훈 파트너", affiliation: "커니 코리아" },
+        { name: "최인철 파트너", affiliation: "커니 코리아" }
+      ]
+    },
+    {
+      id: "D-6",
+      track: "D",
+      trackName: "TRACK D — 마케팅",
+      time: "17:00 - 17:50",
+      title: "AI가 재구성하는 콘텐츠·미디어와 브랜드 스토리텔링",
+      speaker: "유승철 교수",
+      affiliation: "이화여대",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "섭외완료. AI가 재구성하는 콘텐츠·미디어와 브랜드 스토리텔링 강연.",
+      candidates: [
+        { rank: "1순위", name: "유승철 교수", affiliation: "이화여대", reason: "광고홍보 및 미디어 스토리텔링 석학", profileUrl: "https://cmsfox.ewha.ac.kr/thebest/bestai/use-cases-of-edutech.do?articleNo=741630&mode=view&title=%EC%9C%A0%EC%8A%B9%EC%B2%A0+%EA%B5%90%EC%88%98", videoUrl: "https://www.youtube.com/results?search_query=%EC%9C%A0%EC%8A%B9%EC%B2%A0+%EC%9D%B4%ED%99%94%EC%97%AC%EB%8C%80+%EA%B0%95%EC%97%B0" },
+        { rank: "2순위", name: "이승무 교수", affiliation: "한국예술종합학교", reason: "융합 예술 및 뉴미디어 콘텐츠 권위자" },
+        { rank: "일반", name: "김덕진 소장", affiliation: "IT커뮤니케이션연구소", reason: "대중적 IT 트렌드 및 마케팅 응용 강점" }
+      ],
+      declined: [
+        { name: "허기오 총괄", affiliation: "틱톡코리아" },
+        { name: "손현호 대표", affiliation: "틱톡코리아" },
+        { name: "틱톡코리아 법인", affiliation: "공식 채널 문의" }
+      ]
+    },
+    // Track E
+    {
+      id: "E-1",
+      track: "E",
+      trackName: "TRACK E — 조직인사·리더십",
+      time: "10:10 - 11:00",
+      title: "AI 네이티브 HR: '사람'을 넘어 '하이브리드 리소스'의 시대로",
+      speaker: "이중학 교수",
+      affiliation: "동국대",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "AI 네이티브 인재 관리 및 HR 미래 모델 연구자.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "E-2",
+      track: "E",
+      trackName: "TRACK E — 조직인사·리더십",
+      time: "11:20 - 12:10",
+      title: "AX 시대, 일의 미래와 AI Native 직무 재설계",
+      speaker: "서용석 교수",
+      affiliation: "KAIST",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "미래 전략 및 노동환경 변화 연구. (FK25 이력)",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "E-3",
+      track: "E",
+      trackName: "TRACK E — 조직인사·리더십",
+      time: "13:30 - 14:20",
+      title: "오퍼레이터에서 'AI 디렉터'로: AI와 일하는 법",
+      speaker: "박대성 지사장",
+      affiliation: "노션코리아",
+      status: "pending",
+      statusKo: "연사검토중",
+      memo: "링크드인 다이렉트 1촌 수락 대기 및 섭외 컨택 추진 중.",
+      candidates: [
+        { rank: "1순위", name: "이근영 상무보", affiliation: "포스코이앤씨", reason: "현장 내 생성형 AI 도구 실무 이식 성공 실무 리더", profileUrl: "https://www.google.com/search?q=%EC%9D%B4%EA%B7%BC%EC%98%81+%ED%8F%AC%EC%8A%A4%EC%BD%94%EC%9D%B4%EC%95%A4%EC%94%A8+%EC%83%9D%EC%84%B1%ED%98%95+AI", videoUrl: "https://www.youtube.com/results?search_query=%EC%9D%B4%EA%B7%BC%EC%98%81+%ED%8F%AC%EC%8A%A4%EC%BD%94%EC%9D%B4%EC%95%A4%EC%94%A8+AI+%EA%B0%95%EC%97%B0" },
+        { rank: "2순위", name: "장지연 연구위원", affiliation: "한국노동연구원", reason: "일자리 구조 및 기술 혁신에 따른 노동 변화 권위자" },
+        { rank: "일반", name: "장대익 학장", affiliation: "가천대", reason: "인지과학 관점의 인간-AI 협업론 대가" }
+      ],
+      declined: []
+    },
+    {
+      id: "E-4",
+      track: "E",
+      trackName: "TRACK E — 조직인사·리더십",
+      time: "14:40 - 15:30",
+      title: "AI가 만든 가짜 생산성의 덫: '워크슬롭(Workslop)' 현상과 조직적 해법",
+      speaker: "장지연 선임연구위원",
+      affiliation: "한국노동연구원",
+      status: "pending",
+      statusKo: "연사검토중",
+      memo: "한국노동연구원 장지연 선임연구위원 1순위 섭외 검토 진행 중.",
+      candidates: [
+        { rank: "1순위", name: "장지연 선임연구위원", affiliation: "한국노동연구원", reason: "생산성 지표 및 고령화 시기 일의 효율성 연구 전문가", profileUrl: "https://www.google.com/search?q=%EC%9E%A5%EC%A7%80%EC%97%B0+%ED%95%9C%EA%B5%AD%EB%85%B8%EB%8F%99%EC%97%B0%EA%B5%AC%EC%9B%90+%ED%94%84%EB%A1%9C%ED%95%84", videoUrl: "https://www.youtube.com/results?search_query=%EC%9E%A5%EC%A7%80%EC%97%B0+%ED%95%9C%EA%B5%AD%EB%85%B8%EB%8F%99%EC%97%B0%EA%B5%AC%EC%9B%90+%EA%B0%95%EC%97%B0" },
+        { rank: "일반", name: "배상훈 교수", affiliation: "성균관대", reason: "교육 및 역량 평가 분야 연구자" },
+        { rank: "일반", name: "김진아 상무", affiliation: "GS", reason: "대기업 생산성 관리 및 평가 혁신 실무가" }
+      ],
+      declined: [
+        { name: "전준희 CTO", affiliation: "무신사" }
+      ]
+    },
+    {
+      id: "E-5",
+      track: "E",
+      trackName: "TRACK E — 조직인사·리더십",
+      time: "15:50 - 16:40",
+      title: "보상의 재설계: 공정한 보상과 '정서적 연봉'",
+      speaker: "신재용 교수",
+      affiliation: "서울대학교",
+      status: "confirm",
+      statusKo: "섭외완료",
+      memo: "평가 및 보상 설계 분야 최고 석학. 섭외 확정 완료.",
+      candidates: [],
+      declined: []
+    },
+    {
+      id: "E-6",
+      track: "E",
+      trackName: "TRACK E — 조직인사·리더십",
+      time: "17:00 - 17:50",
+      title: "[AX사례] AI Native HR: 채용부터 평가 보상까지",
+      speaker: "김민주 팀장",
+      affiliation: "SK AX",
+      status: "pending",
+      statusKo: "연사검토중",
+      memo: "SK 계열사의 AI 적용 실증 성공사례 발표 조율 중.",
+      candidates: [
+        { rank: "1순위", name: "김민주 팀장", affiliation: "SK AX", reason: "대기업 AI 인프라 이식과 인사 적용의 선두 실무가", profileUrl: "https://www.google.com/search?q=%EA%B9%80%EB%AF%BC%EC%A3%BC+%ED%8C%80%EC%9E%A5+SK+AX+AI+HR", videoUrl: "https://www.youtube.com/results?search_query=%EA%B9%80%EB%AF%BC%EC%A3%BC+SK+AX+AI+HR+%EA%B0%95%EC%97%B0" },
+        { rank: "2순위", name: "송일석 파트너", affiliation: "SAP Korea", reason: "글로벌 SaaS 솔루션 기반 HR 시스템 구축 전문가" },
+        { rank: "3순위", name: "박동준 컨설턴트", affiliation: "코너스톤", reason: "B2B 인재 개발 솔루션 구현 전문가" }
+      ],
+      declined: []
+    },
+    {
+      id: "E-예비",
+      track: "E",
+      trackName: "TRACK E — 조직인사·리더십",
+      time: "미정",
+      title: "[예비] 늙음 기준 75세 패러다임 시프트: 초고령 사회의 '평생 현역'과 HR의 미래",
+      speaker: "미지정",
+      affiliation: "",
+      status: "reserve",
+      statusKo: "예비 세션",
+      memo: "예비 세션으로 전환 (정규 편성 시 전체 시간표 조정 필요). 전영수 교수 섭외를 위한 최초 제안 검토 단계.",
+      candidates: [
+        { rank: "1순위", name: "전영수 교수", affiliation: "한양대학교 국제학대학원", reason: "[인구학 및 세대 경제학 연구]를 [초고령 사회 정년 연장과 고용 체계를 고민하는 기업 임원 관점]으로 풀 수 있는 후보", profileUrl: "https://www.pnf.ac/asset/mv_edu_detail.php?sid=3&tc_id=2076", videoUrl: "https://www.youtube.com/results?search_query=%EC%A0%84%EC%98%81%EC%88%98+%ED%95%9C%EC%96%91%EB%8C%80+%EC%9D%B8%EA%B5%AC+%EA%B0%95%EC%97%B0" }
+      ],
+      declined: []
+    }
+  ];
+
+  let currentTrack = 'all';
+
+  // Render Function
+  function renderTable(filter = 'all', searchQuery = '') {
+    const tableBody = document.getElementById('sessionTableBody');
+    tableBody.innerHTML = '';
+
+    const filtered = sessions.filter(session => {
+      // Track Filter
+      const matchesTrack = filter === 'all' || session.track === filter;
+      
+      // Search Filter
+      const matchesSearch = !searchQuery || 
+        session.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        session.speaker.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (session.affiliation && session.affiliation.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      return matchesTrack && matchesSearch;
+    });
+
+    if (filtered.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px;">일치하는 세션 데이터가 없습니다.</td></tr>`;
+      return;
+    }
+
+    filtered.forEach(session => {
+      // Row
+      const row = document.createElement('tr');
+      row.className = 'session-row';
+      row.id = `row-${session.id}`;
+      row.onclick = () => toggleDetails(session.id);
+
+      let badgeClass = 'badge-confirm';
+      if (session.status === 'pending') badgeClass = 'badge-pending';
+      if (session.status === 'need') badgeClass = 'badge-need';
+      if (session.status === 'reserve') badgeClass = 'badge-reserve';
+
+      row.innerHTML = `
+        <td><span class="id-badge">${session.id}</span></td>
+        <td class="time-col">${session.time}</td>
+        <td class="title-col">${session.title}</td>
+        <td class="speaker-col">
+          ${session.speaker}
+          ${session.affiliation ? `<span class="speaker-affil">${session.affiliation}</span>` : ''}
+        </td>
+        <td><span class="badge ${badgeClass}">${session.statusKo}</span></td>
+      `;
+
+      // Detail Row
+      const detailRow = document.createElement('tr');
+      detailRow.className = 'detail-row';
+      detailRow.id = `detail-${session.id}`;
+
+      // Candidates list HTML
+      let candidatesHtml = '';
+      if (session.candidates && session.candidates.length > 0) {
+        candidatesHtml = session.candidates.map(c => `
+          <div class="candidate-card">
+            <div class="candidate-header">
+              <span class="candidate-name">${c.name} <span style="font-weight:400; font-size:0.8rem; color:var(--text-muted);">${c.affiliation || ''}</span></span>
+              <span class="candidate-rank">${c.rank}</span>
+            </div>
+            <div class="candidate-reason">${c.reason}</div>
+            ${c.profileUrl || c.videoUrl ? `
+              <div class="candidate-links">
+                ${c.profileUrl ? `<a class="candidate-link" href="${c.profileUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">프로필 ↗</a>` : ''}
+                ${c.videoUrl ? `<a class="candidate-link" href="${c.videoUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">영상 ↗</a>` : ''}
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+      } else {
+        candidatesHtml = `<p class="no-data">등록된 대안 후보연사가 없습니다.</p>`;
+      }
+
+      // Declined list HTML
+      let declinedHtml = '';
+      if (session.declined && session.declined.length > 0) {
+        declinedHtml = session.declined.map(d => `
+          <div class="declined-item">
+            <strong>${d.name}</strong> (${d.affiliation || ''})
+          </div>
+        `).join('');
+      } else {
+        declinedHtml = `<p class="no-data">거절 이력 없음</p>`;
+      }
+
+      detailRow.innerHTML = `
+        <td colspan="5">
+          <div class="detail-content">
+            <div class="detail-grid">
+              <div>
+                <h4 class="detail-section-title">진행 메모 / 세션 개요</h4>
+                <div class="detail-box">
+                  <p style="font-weight: 500; margin-bottom: 8px;">${session.memo}</p>
+                  ${session.email ? `<p style="font-size: 0.825rem; color: var(--text-muted);">연락처: <a href="mailto:${session.email}" style="color: var(--accent-color);">${session.email}</a></p>` : ''}
+                  <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 12px;">분류: ${session.trackName}</p>
+                </div>
+              </div>
+              <div>
+                <h4 class="detail-section-title">${session.status === 'confirm' ? '확정 연사 정보' : '대안 후보군 및 추천 사유'}</h4>
+                <div class="detail-box">
+                  ${session.status === 'confirm' 
+                    ? `<p style="font-weight: 600;">${session.speaker} (${session.affiliation || '소속 미기재'})</p><p style="margin-top:8px; font-size:0.85rem; color:var(--text-muted);">섭외가 정상 완료되어 강연 자료 준비 단계입니다.</p>`
+                    : candidatesHtml
+                  }
+                </div>
+              </div>
+            </div>
+            ${session.declined && session.declined.length > 0 ? `
+              <div style="margin-top: 20px;">
+                <h4 class="detail-section-title">섭외 거절/보류 이력</h4>
+                <div class="detail-box" style="background-color: #fcf8f8; border-color: #f1e2e2;">
+                  ${declinedHtml}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </td>
+      `;
+
+      tableBody.appendChild(row);
+      tableBody.appendChild(detailRow);
+    });
+  }
+
+  // Filter Track
+  function renderTrackProgress() {
+    ['A', 'B', 'C', 'D', 'E'].forEach(track => {
+      const trackSessions = sessions.filter(session => session.track === track && session.status !== 'reserve');
+      const total = trackSessions.length;
+      const completed = trackSessions.filter(session => session.status === 'confirm').length;
+      const percentage = total ? Math.round((completed / total) * 100) : 0;
+      const progress = document.getElementById(`progress-${track}`);
+
+      if (progress) {
+        progress.textContent = `전체 ${total}개 · ${completed}개 완료 · ${percentage}%`;
+      }
+    });
+  }
+
+  function filterTrack(track) {
+    currentTrack = track;
+    
+    // Toggle active tab class
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    const activeBtn = Array.from(buttons).find(btn => {
+      if (track === 'all') return btn.textContent.includes('전체');
+      if (track === 'keynote') return btn.textContent.includes('기조연설');
+      return btn.textContent.includes(`Track ${track}`);
+    });
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const searchVal = document.getElementById('searchInput').value;
+    renderTable(track, searchVal);
+  }
+
+  // Search Sessions
+  function searchSessions() {
+    const searchVal = document.getElementById('searchInput').value;
+    renderTable(currentTrack, searchVal);
+  }
+
+  // Toggle Accordion Detail Row
+  function toggleDetails(sessionId) {
+    const row = document.getElementById(`row-${sessionId}`);
+    const detailRow = document.getElementById(`detail-${sessionId}`);
+    
+    const isActive = row.classList.contains('active');
+    
+    // Close other open rows
+    const allRows = document.querySelectorAll('.session-row');
+    const allDetailRows = document.querySelectorAll('.detail-row');
+    allRows.forEach(r => r.classList.remove('active'));
+    allDetailRows.forEach(dr => dr.classList.remove('active'));
+
+    // Toggle current
+    if (!isActive) {
+      row.classList.add('active');
+      detailRow.classList.add('active');
+    }
+  }
+
+  // Initial Load
+  window.onload = function() {
+    renderTrackProgress();
+    renderTable('all');
+  }
+</script>
+
+</body>
+</html>
