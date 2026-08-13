@@ -568,6 +568,68 @@
       border-color: var(--accent-color);
     }
 
+    .candidate-link-button {
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .profile-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.55);
+    }
+
+    .profile-modal.active {
+      display: flex;
+    }
+
+    .profile-modal-dialog {
+      width: min(560px, 100%);
+      max-height: min(520px, 100%);
+      overflow: auto;
+      padding: 28px;
+      border-radius: 12px;
+      background: var(--card-bg);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+    }
+
+    .profile-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .profile-modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .profile-modal-close {
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: var(--text-main);
+      cursor: pointer;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .profile-modal-content {
+      color: var(--secondary-color);
+      font-size: 0.92rem;
+      line-height: 1.75;
+      white-space: pre-line;
+    }
+
     .declined-item {
       font-size: 0.85rem;
       color: #991b1b;
@@ -610,11 +672,11 @@
     <div class="card">
       <div class="card-title">전체 섭외 진척도</div>
       <div class="progress-container">
-        <div class="progress-circle" style="background: conic-gradient(var(--accent-color) 84%, #f1f5f9 0);">
-          <div class="progress-text">84%</div>
+        <div class="progress-circle" style="background: conic-gradient(var(--accent-color) 81%, #f1f5f9 0);">
+          <div class="progress-text">81%</div>
         </div>
         <div class="progress-details">
-          <p>26 / 31명 확정</p>
+          <p>25 / 31명 확정</p>
           <span>목표: 기조 1명 + 세션 30명</span>
         </div>
       </div>
@@ -627,28 +689,28 @@
         <div class="stats-bar-item">
           <div class="stats-bar-label">
             <span>현직자 (실장, 대표, 소장 등)</span>
-            <strong>12명 (46.2%)</strong>
+            <strong>11명 (44.0%)</strong>
           </div>
           <div class="stats-bar-bg">
-            <div class="stats-bar-fill" style="width: 46.2%; background-color: #0284c7;"></div>
+            <div class="stats-bar-fill" style="width: 44.0%; background-color: #0284c7;"></div>
           </div>
         </div>
         <div class="stats-bar-item">
           <div class="stats-bar-label">
             <span>교수 및 연구인력</span>
-            <strong>10명 (38.5%)</strong>
+            <strong>10명 (40.0%)</strong>
           </div>
           <div class="stats-bar-bg">
-            <div class="stats-bar-fill" style="width: 38.5%; background-color: #10b981;"></div>
+            <div class="stats-bar-fill" style="width: 40.0%; background-color: #10b981;"></div>
           </div>
         </div>
         <div class="stats-bar-item">
           <div class="stats-bar-label">
             <span>컨설턴트 (파트너, 수석 등)</span>
-            <strong>4명 (15.4%)</strong>
+            <strong>4명 (16.0%)</strong>
           </div>
           <div class="stats-bar-bg">
-            <div class="stats-bar-fill" style="width: 15.4%; background-color: #f59e0b;"></div>
+            <div class="stats-bar-fill" style="width: 16.0%; background-color: #f59e0b;"></div>
           </div>
         </div>
       </div>
@@ -703,6 +765,16 @@
 
 </div>
 
+<div class="profile-modal" id="profileModal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle" onclick="closeProfileModal(event)">
+  <div class="profile-modal-dialog" onclick="event.stopPropagation()">
+    <div class="profile-modal-header">
+      <h2 class="profile-modal-title" id="profileModalTitle"></h2>
+      <button class="profile-modal-close" type="button" aria-label="프로필 팝업 닫기" onclick="closeProfileModal()">×</button>
+    </div>
+    <div class="profile-modal-content" id="profileModalContent"></div>
+  </div>
+</div>
+
 <script>
   // Raw Data Definitions
   const sessions = [
@@ -711,7 +783,7 @@
       track: "keynote",
       trackName: "기조연설",
       time: "09:00 - 09:50",
-      title: "AX 시대의 개념설계: 모방의 한계를 넘는 '최초의 질문'",
+      title: "그랜드퀘스트: 모방의 한계를 넘는 '최초의 질문'",
       speaker: "이정동 교수",
       affiliation: "서울대학교",
       email: "leejd@snu.ac.kr",
@@ -985,15 +1057,15 @@
       time: "15:50 - 16:40",
       title: "다크팩토리와 피지컬 AI 트렌드, 제조 현장을 바꾸는 산업 AX",
       speaker: "고태봉 전무",
-      affiliation: "iM증권",
-      status: "need",
-      statusKo: "연락필요",
-      memo: "iM증권 고태봉 전무 섭외 추진 결정. 1순위 초청을 위한 연락처 확보 완료.",
+      affiliation: "iM증권 리서치본부",
+      status: "pending",
+      statusKo: "연사검토중",
+      memo: "고태봉 전무 연사 섭외를 검토 중.",
       candidates: [
-        { rank: "1순위", name: "고태봉 전무", affiliation: "iM증권 리서치본부", reason: "제조업 트렌드 및 지능형 모빌리티/공장 분석 전문가", profileUrl: "https://www.google.com/search?q=%EA%B3%A0%ED%83%9C%EB%B4%89+iM%EC%A6%9D%EA%B6%8C+%ED%94%84%EB%A1%9C%ED%95%84", videoUrl: "https://www.youtube.com/results?search_query=%EA%B3%A0%ED%83%9C%EB%B4%89+%ED%94%BC%EC%A7%80%EC%BB%AC+AI+%EA%B0%95%EC%97%B0" },
         { rank: "2순위", name: "윤일용 소장", affiliation: "포스코 AI로봇융합연구소", reason: "철강 및 대규모 제조 현장 AI 적용 실무 탑티어" },
         { rank: "3순위", name: "주시현 상무", affiliation: "현대자동차", reason: "스마트 팩토리 및 모빌리티 인공지능 혁신 담당자" },
-        { rank: "일반", name: "윤성호 대표", affiliation: "마키나락스", reason: "산업용 AI 솔루션 전문 스타트업 대표" }
+        { rank: "일반", name: "윤성호 대표", affiliation: "마키나락스", reason: "산업용 AI 솔루션 전문 스타트업 대표" },
+        { rank: "일반", name: "김상배 교수", affiliation: "MIT 기계공학과", reason: "휴머노이드 및 피지컬 AI 분야 글로벌 권위자" }
       ],
       declined: [
         { name: "장영재 교수", affiliation: "KAIST" }
@@ -1062,13 +1134,13 @@
       trackName: "TRACK D — 마케팅",
       time: "14:40 - 15:30",
       title: "[AX사례] 퍼포먼스 마케팅의 재설계: AI 측정·최적화와 인간의 판단",
-      speaker: "몰로코",
-      affiliation: "공식 법인 추천 대기",
-      status: "pending",
-      statusKo: "연사검토중",
-      memo: "안재균 한국지사장 고사 후 몰로코 공식 채널을 통해 본사 실무 적임자 추천 요청 진행 중.",
+      speaker: "미정",
+      affiliation: "",
+      status: "need",
+      statusKo: "연사섭외 필요",
+      memo: "1순위 김형태 대표 섭외를 검토 중.",
       candidates: [
-        { rank: "1순위", name: "김민영 CMO", affiliation: "솔루엠 (전 W컨셉 CMO)", reason: "커머스 및 B2B 퍼포먼스 브랜딩 실질 성과 도출인력", profileUrl: "https://www.google.com/search?q=%EA%B9%80%EB%AF%BC%EC%98%81+CMO+%EC%86%94%EB%A3%A8%EC%97%A0+W%EC%BB%A8%EC%85%89", videoUrl: "https://www.youtube.com/results?search_query=%EA%B9%80%EB%AF%BC%EC%98%81+CMO+%EC%BB%A4%EB%A8%B8%EC%8A%A4+%EB%B8%8C%EB%9E%9C%EB%94%A9" }
+        { rank: "1순위", name: "김형태 대표", affiliation: "퍼포먼스바이TBWA", reason: "AI 기반 퍼포먼스 마케팅 및 최적화 실무 전문가", profileText: "퍼포먼스바이TBWA는 웰컴금융그룹과 글로벌 광고그룹 TBWA코리아의 합작사로 2018년 출범한 디지털 마케팅 컨설팅 업체다.\n\n간단 프로필\n現 퍼포먼스바이TBWA 대표이사 (2018년~현재) | TBWA코리아 근무 | 웰컴금융그룹 근무", videoUrl: "https://www.youtube.com/watch?v=o6uLzLty3Rg" }
       ],
       declined: [
         { name: "안재균 지사장", affiliation: "몰로코 한국지사" }
@@ -1156,7 +1228,8 @@
       candidates: [
         { rank: "1순위", name: "이근영 상무보", affiliation: "포스코이앤씨", reason: "현장 내 생성형 AI 도구 실무 이식 성공 실무 리더", profileUrl: "https://www.google.com/search?q=%EC%9D%B4%EA%B7%BC%EC%98%81+%ED%8F%AC%EC%8A%A4%EC%BD%94%EC%9D%B4%EC%95%A4%EC%94%A8+%EC%83%9D%EC%84%B1%ED%98%95+AI", videoUrl: "https://www.youtube.com/results?search_query=%EC%9D%B4%EA%B7%BC%EC%98%81+%ED%8F%AC%EC%8A%A4%EC%BD%94%EC%9D%B4%EC%95%A4%EC%94%A8+AI+%EA%B0%95%EC%97%B0" },
         { rank: "2순위", name: "장지연 연구위원", affiliation: "한국노동연구원", reason: "일자리 구조 및 기술 혁신에 따른 노동 변화 권위자" },
-        { rank: "일반", name: "장대익 학장", affiliation: "가천대", reason: "인지과학 관점의 인간-AI 협업론 대가" }
+        { rank: "일반", name: "장대익 학장", affiliation: "가천대", reason: "인지과학 관점의 인간-AI 협업론 대가" },
+        { rank: "일반", name: "양혁승 교수", affiliation: "연세대", reason: "조직 및 인사관리 분야 학술 연구자" }
       ],
       declined: []
     },
@@ -1200,17 +1273,20 @@
       trackName: "TRACK E — 조직인사·리더십",
       time: "17:00 - 17:50",
       title: "[AX사례] AI Native HR: 채용부터 평가 보상까지",
-      speaker: "김민주 팀장",
-      affiliation: "SK AX",
-      status: "pending",
-      statusKo: "연사검토중",
-      memo: "SK 계열사의 AI 적용 실증 성공사례 발표 조율 중.",
+      speaker: "미정",
+      affiliation: "",
+      status: "need",
+      statusKo: "연사섭외 필요",
+      memo: "김민주 팀장 거절 후 후속 후보를 검토 중.",
       candidates: [
-        { rank: "1순위", name: "김민주 팀장", affiliation: "SK AX", reason: "대기업 AI 인프라 이식과 인사 적용의 선두 실무가", profileUrl: "https://www.google.com/search?q=%EA%B9%80%EB%AF%BC%EC%A3%BC+%ED%8C%80%EC%9E%A5+SK+AX+AI+HR", videoUrl: "https://www.youtube.com/results?search_query=%EA%B9%80%EB%AF%BC%EC%A3%BC+SK+AX+AI+HR+%EA%B0%95%EC%97%B0" },
-        { rank: "2순위", name: "송일석 파트너", affiliation: "SAP Korea", reason: "글로벌 SaaS 솔루션 기반 HR 시스템 구축 전문가" },
-        { rank: "3순위", name: "박동준 컨설턴트", affiliation: "코너스톤", reason: "B2B 인재 개발 솔루션 구현 전문가" }
+        { rank: "1순위", name: "김성준 교수", affiliation: "국민대", reason: "AI Native HR 관련 전문성을 갖춘 후보", profileUrl: "https://store.kyobobook.co.kr/person/detail/1000079212" },
+        { rank: "2순위", name: "윤명훈 사업총괄", affiliation: "원티드랩", reason: "AI 기반 채용·인사 플랫폼 실무 전문가", profileUrl: "https://store.kyobobook.co.kr/person/detail/1116819501" },
+        { rank: "3순위", name: "송일석 상무", affiliation: "SAP", reason: "기업 HR 시스템 전문가" },
+        { rank: "일반", name: "김지수 상무", affiliation: "머서", reason: "보상 및 조직 분야 전문가" }
       ],
-      declined: []
+      declined: [
+        { name: "김민주 팀장", affiliation: "SK AX" }
+      ]
     },
     {
       id: "E-예비",
@@ -1293,8 +1369,9 @@
               <span class="candidate-rank">${c.rank}</span>
             </div>
             <div class="candidate-reason">${c.reason}</div>
-            ${c.profileUrl || c.videoUrl ? `
+            ${c.profileText || c.profileUrl || c.videoUrl ? `
               <div class="candidate-links">
+                ${c.profileText ? `<button class="candidate-link candidate-link-button" type="button" data-name="${encodeURIComponent(c.name)}" data-profile-text="${encodeURIComponent(c.profileText)}" onclick="event.stopPropagation(); openProfileModal(decodeURIComponent(this.dataset.name), decodeURIComponent(this.dataset.profileText))">프로필</button>` : ''}
                 ${c.profileUrl ? `<a class="candidate-link" href="${c.profileUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">프로필 ↗</a>` : ''}
                 ${c.videoUrl ? `<a class="candidate-link" href="${c.videoUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">영상 ↗</a>` : ''}
               </div>
@@ -1394,6 +1471,21 @@
     const searchVal = document.getElementById('searchInput').value;
     renderTable(currentTrack, searchVal);
   }
+
+  function openProfileModal(name, profileText) {
+    document.getElementById('profileModalTitle').textContent = `${name} 프로필`;
+    document.getElementById('profileModalContent').textContent = profileText;
+    document.getElementById('profileModal').classList.add('active');
+  }
+
+  function closeProfileModal(event) {
+    if (event && event.target !== document.getElementById('profileModal')) return;
+    document.getElementById('profileModal').classList.remove('active');
+  }
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeProfileModal();
+  });
 
   // Toggle Accordion Detail Row
   function toggleDetails(sessionId) {
